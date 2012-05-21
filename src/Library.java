@@ -2,7 +2,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Library {
-    public static final String NO_THIS_BOOK = "Sorry we don't have that book yet.";
+    private final String NO_THIS_BOOK = "Sorry we don't have that book yet.";
+    private final String ENJOY_BOOK = "Thank You! Enjoy the book.";
     private TouchPad touchPad = new TouchPad();
     private final String WELCOME = "Welcome to the library.";
     private final String BYT_BYE = "Bye Bye";
@@ -30,52 +31,61 @@ public class Library {
         showMenu();
     }
 
-    public void receiveCommand(){
+    public void receiveCommandFromUser(){
         while (true){
-            touch();
+            processCommand();
         }
     }
 
-    public void touch() {
+    public void processCommand() {
         int command = touchPad.waitForTouch();
 
         if(user.getPlace() == Place.SHELF){
-            if(command == 0){
-                user.setPlace(Place.GATE);
-                showMenu();
-                return;
-            }
-            int bookId = command;
-            String book = getBookFrom(bookId);
-            if(book == null){
-                touchPad.show(NO_THIS_BOOK);
-                return;
-            }
-            user.getCollection().add(book);
-            touchPad.show("Thank You! Enjoy the book.");
+            if (processCommandInShelf(command)) return;
         }
 
         if(user.getPlace() == Place.GATE){
-            switch (command){
-                case 0:
-                    touchPad.show(BYT_BYE);
-                    System.exit(1);
-                    break;
-                case 1:
-                    user.setPlace(Place.SHELF);
-                    touchPad.show(books);
-                    break;
-                case 2:
-                    touchPad.show(user.getCollection());
-                    break;
-                case 3:
-                    touchPad.show(SAY_TO_Librarian);
-                    break;
-                default:
-                    touchPad.show(VALID_OPTION);
-                    break;
-            }
+            processCommandInGate(command);
         }
+    }
+
+    private void processCommandInGate(int command) {
+        switch (command){
+            case 0:
+                touchPad.show(BYT_BYE);
+                System.exit(1);
+                break;
+            case 1:
+                user.setPlace(Place.SHELF);
+                touchPad.show(books);
+                break;
+            case 2:
+                touchPad.show(user.getCollection());
+                break;
+            case 3:
+                touchPad.show(SAY_TO_Librarian);
+                break;
+            default:
+                touchPad.show(VALID_OPTION);
+                break;
+        }
+    }
+
+    private boolean processCommandInShelf(int command) {
+        if(command == 0){
+            user.setPlace(Place.GATE);
+            showMenu();
+            return true;
+        }
+        int bookId = command;
+        String book = getBookFrom(bookId);
+        if(book == null){
+            touchPad.show(NO_THIS_BOOK);
+            return true;
+        }
+        user.getCollection().add(book);
+        touchPad.show(ENJOY_BOOK);
+        return false;
     }
 
     private void showMenu() {

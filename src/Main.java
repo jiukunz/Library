@@ -5,6 +5,6 @@ public class Main {
         Library library = new Library(touchPad,user);
 
         library.greet();
-        library.receiveCommand();
+        library.receiveCommandFromUser();
     }
 }

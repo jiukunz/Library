@@ -49,8 +49,8 @@ public class LibraryTest {
         InputStream inputStream = new ByteArrayInputStream("4".getBytes());
         TouchPad touchPad = new TouchPad(new Scanner(inputStream), new PrintStream(outputStream));
         Library library = new Library(touchPad, user);
-        library.touch();
-        assertThat(outputStream.toString(),containsString("Select a valid option!!"));
+        library.processCommand();
+        assertThat(outputStream.toString(),is("Select a valid option!!\n"));
     }
 
     @Test
@@ -59,7 +59,7 @@ public class LibraryTest {
         InputStream inputStream = new ByteArrayInputStream("1".getBytes());
         TouchPad touchPad = new TouchPad(new Scanner(inputStream), new PrintStream(outputStream));
         Library library = new Library(touchPad, user);
-        library.touch();
+        library.processCommand();
         assertThat(outputStream.toString(),is("1.Harry Poter\n" +
                 "2.Clean Code\n" +
                 "0.Exit\n"));
@@ -72,7 +72,7 @@ public class LibraryTest {
         InputStream inputStream = new ByteArrayInputStream("1".getBytes());
         TouchPad touchPad = new TouchPad(new Scanner(inputStream), new PrintStream(outputStream));
         Library library = new Library(touchPad, user);
-        library.touch();
+        library.processCommand();
         
         assertThat(user.getCollection().get(0),is("Harry Poter"));
         assertThat(outputStream.toString(),is("Thank You! Enjoy the book.\n"));
@@ -85,7 +85,7 @@ public class LibraryTest {
         InputStream inputStream = new ByteArrayInputStream("4".getBytes());
         TouchPad touchPad = new TouchPad(new Scanner(inputStream), new PrintStream(outputStream));
         Library library = new Library(touchPad, user);
-        library.touch();
+        library.processCommand();
 
         assertThat(outputStream.toString(),is("Sorry we don't have that book yet.\n"));
     }
@@ -96,7 +96,7 @@ public class LibraryTest {
         InputStream inputStream = new ByteArrayInputStream("3".getBytes());
         TouchPad touchPad = new TouchPad(new Scanner(inputStream), new PrintStream(outputStream));
         Library library = new Library(touchPad, user);
-        library.touch();
+        library.processCommand();
 
         assertThat(outputStream.toString(),is("Please talk to Librarian. Thank you.\n"));
     }
